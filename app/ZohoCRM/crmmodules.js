@@ -17,7 +17,6 @@ async function createRecord(fetchedLocation, time, checkINOutStatus) {
     try {
         let response = await ZOHO.CRM.API.insertRecord({ Entity: "attendancelog__Attendence_Log", APIData: recordData, Trigger: ["workflow"] });
         return response.data[0].code
-        return true;
     } catch (error) {
         console.log(error);
         throw new Error(error);

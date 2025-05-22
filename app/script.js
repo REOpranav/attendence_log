@@ -6,15 +6,24 @@ ZOHO.embeddedApp.on("PageLoad", async function (data) {
         let currentAddress = await getAddress(); // getting current location addressL
         let currentTime = new Date().toLocaleString();
         let getAllRecords = await getAllData()
- 
-        Boolean(checkInButton.textContent == "Check out") ? (
-            checkInButton.innerText = "Check in",
-            CheckInType.innerText = "out"
-        ) : (
-            await CheckInOutType(CheckInType),
-            await createRecord(currentAddress, currentTime, CheckInType?.textContent),
-            checkInButton.innerText = "Check out"
-        )
+
+        if (checkInButton.textContent === "Check out") {
+            checkInButton.innerText = "Check in";
+            CheckInType.innerText = "out";
+        } else {
+            await CheckInOutType(CheckInType);
+            if (getAllRecords.length > 0) {
+                if (!compareDate(getAllRecords)) {
+                    const recordCreation = await createRecord(currentAddress, currentTime, CheckInType?.textContent);
+                    console.log(recordCreation);
+                } else {
+                    console.log('Already Checked IN');
+                }
+            } else {
+                await createRecord(currentAddress, currentTime, CheckInType?.textContent);
+            }
+            checkInButton.innerText = "Check out";
+        }
     })
 })
 

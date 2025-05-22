@@ -62,3 +62,21 @@ async function getAllData() {
         throw new Error(error);
     }
 }
+
+// conmpare the date of the last record with the current date
+async function compareDate(getAllRecords) {
+    let lastRecordDate = getAllRecords[0].Created_Time.split("T")[0];
+    let currentDate = new Date().toLocaleString().split(",")[0];
+
+    const date1 = new Date(lastRecordDate)
+    const date2Parts = currentDate.split("/")
+
+    const date2 = new Date(`${date2Parts[2]}-${date2Parts[1]}-${date2Parts[0]}`)
+
+    // Compare them
+    if (date1.getTime() === date2.getTime()) {
+        return true;
+    } else {
+        return false;
+    }
+}
