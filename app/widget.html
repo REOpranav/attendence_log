@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+</head>
+
+<body>
+  <h2>This is a sample Widget built using Zoho Extension toolkit.</h2>
+  <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=Ij0yuOPvxLgyy2jN8Oiyovi4m1FHr038"></script>
+  <script src="https://live.zwidgets.com/js-sdk/1.0.5/ZohoEmbededAppSDK.min.js"></script>
+
+  <div class="progress-bar" id="progressBar"></div>
+
+  <div class="toggle-container">
+    <span id="CheckInStatus" class="CheckInStatus"></span>
+    <input type="checkbox" id="toggleSwitch" hidden>
+    <label for="toggleSwitch" class="toggle"></label>
+    <span id="toggleText">Check In</span>
+  </div>
+  <h2>Check In/Out Tracker</h2>
+  <p id="statusMessage" class="status-message">Fetching location, please wait...</p>
+
+  <table id="logTable">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Date</th>
+        <th>Check-In Time</th>
+        <th>Location</th>
+        <th>Latitude</th>
+        <th>Longitude</th>
+        <th>Check-Out Time</th>
+        <th>Location</th>
+        <th>Latitude</th>
+        <th>Longitude</th>
+        <!-- <th>Total Duration</th> -->
+      </tr>
+    </thead>
+    <tbody id="tableBody">
+      <tr class="no-records">
+        <td colspan="11">No records found</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <script src="utils/utils.js" defer></script>
+  <script src="script.js" defer></script>
+</body>
+
+</html>
