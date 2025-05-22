@@ -23,8 +23,8 @@ function getAddress() { // getting the current location address
     });
 }
 
-// check in check out status
-async function CheckInOutStatus(CheckInStatus) {
+// checking Office In or Remote In
+async function CheckInOutType(CheckInStatus) {
     let fetchedGeoCoding = await getAddress()
 
     const lat = 12.500992;
@@ -46,4 +46,19 @@ async function CheckInOutStatus(CheckInStatus) {
     }
     let CheckInOutStatus = CheckInStatus.innerText === "Office In" ? "Office In" : "Remote In";
     return CheckInOutStatus;
+}
+
+// Get all records from the ZOHO CRM
+async function getAllData() {
+    try {
+        let response = await ZOHO.CRM.API.getAllRecords({ Entity: "attendancelog__Attendence_Log", page: 1 });
+        if (!response?.data) {
+            if (response?.status === 204) return [];
+            throw new Error(`${response.status}`);
+        }
+        return response?.data;
+    } catch (error) {
+        console.error(error)
+        throw new Error(error);
+    }
 }
