@@ -1,0 +1,226 @@
+:root {
+    --primary-color: #0a2532;
+    --secondary-color: #0a3041;
+    --background-color: #f9f9f9;
+    --color: #ffff;
+    --border-radius: 5px;
+    --text-color: #fff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'lato', Helvetica, sans-serif, Arial;
+    font-size: small;
+    display: flex;
+    height: 100vh;
+}
+
+.container {
+    width: 100%;
+}
+
+.container>.headers {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--primary-color);
+    padding: 8px;
+    color: var(--color);
+}
+
+.container>.headers>h3 {
+    margin-left: 15px;
+}
+
+.main-content {
+    display: flex;
+    min-height: 93%;
+}
+
+.nextMain2 {
+    flex: 1;
+}
+
+.sidebar {
+    background: var(--secondary-color);
+    min-height: 100%;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.sidebar>.section1 {
+    display: flex;
+    flex-direction: column;
+    padding: 0 20px;
+    width: 220px;
+    color: var(--color);
+}
+
+.section2 {
+    display: flex;
+    padding: 10px;
+    color: var(--color);
+    justify-content: center;
+}
+
+.section2>.dark-mode>label {
+    margin-right: 10px;
+}
+
+.section2>.dark-mode>input:hover {
+    cursor: pointer;
+}
+
+.toggle-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 15px 0;
+}
+
+.nav-btn {
+    text-align: justify;
+    margin: 5px 0;
+    padding: 10px;
+    border: none;
+    color: #0a3ba8;
+    font-weight: bold;
+    cursor: pointer;
+    min-width: 100%;
+}
+
+.nav-btn {
+    background: white;
+}
+
+
+.top-bar {
+    background: var(--secondary-color);
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--color);
+}
+
+.view-options button {
+    margin-left: 10px;
+    padding: 8px 12px;
+    border: 1px solid #026fd3;
+    color: #026fd3;
+    font-weight: 500;
+    border-radius: 5px;
+    cursor: pointer;
+    background: white;
+    transition: 0.3s all ease-in-out;
+}
+
+.view-options button:hover {
+    background: #026fd3;
+    color: white;
+}
+
+.profile-icon {
+    border-radius: 50%;
+    padding: 6px;
+    font-size: 18px;
+}
+
+.lightMode {
+    margin-top: 3px;
+    overflow-x: auto;
+    background-color: #fff;
+    color: black;
+}
+
+.darkMode {
+    margin-top: 3px;
+    overflow-x: auto;
+    background-color: #131c26;
+    color: var(--color); 
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: transparent;
+    overflow: hidden;
+}
+
+thead {
+    background: #f1f2f3;
+}
+
+.headDark{
+    background: #192a3b;
+}
+
+.headLigth{
+    background: #f1f2f3;
+}
+
+tr {
+    border: none;
+    transition: 0.2s all ease-in-out;
+}
+
+th,
+td {
+    padding: 12px 15px;
+    text-align: left;
+    /* border-bottom: 1px solid #ddd; */
+}
+
+tbody tr:hover {
+    color: #0177E4;
+    cursor: pointer;
+}
+
+/* toge button */
+.toggle-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 3px;
+}
+
+.CheckInStatus {
+    color: #0EBC6B;
+}
+
+.toggle {
+    position: relative;
+    width: 50px;
+    height: 25px;
+    background: #ddd;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.toggle::before {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    top: 2.5px;
+    left: 3px;
+    transition: 0.3s;
+}
+
+input:checked+.toggle {
+    background: #0EBC6B;
+}
+
+input:checked+.toggle::before {
+    left: 26px;
+}

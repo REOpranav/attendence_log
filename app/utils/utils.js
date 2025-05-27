@@ -72,11 +72,37 @@ async function compareDate(getAllRecords) {
     const date2Parts = currentDate.split("/")
 
     const date2 = new Date(`${date2Parts[2]}-${date2Parts[1]}-${date2Parts[0]}`)
-
     // Compare them
     if (date1.getTime() === date2.getTime()) {
         return true;
     } else {
         return false;
     }
+}
+
+// adding notes while checking in or checking out
+const addingNotes = async (moduleName, recordID, notesTitle, notesContent) => {
+    try {
+        let addingNotes = await ZOHO.CRM.API.addNotes({
+            Entity: moduleName,
+            RecordID: recordID,
+            Title: notesTitle,
+            Content: notesContent
+        })
+        return addingNotes;
+    } catch (erre) {
+        throw new Error(erre);
+    }
+}
+
+// get notes from the record
+const getnotes = (moduleName, recordID, relatedList) => {
+    ZOHO.CRM.API.getRelatedRecords({
+        Entity: moduleName,
+        RecordID: recordID,
+        RelatedList: relatedList,
+        page: 1, per_page: 200
+    }).then(function (data) {
+        console.log(data)
+    })
 }

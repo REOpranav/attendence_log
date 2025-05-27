@@ -3,16 +3,91 @@
 
 <head>
   <meta charset="UTF-8">
+  <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=Ij0yuOPvxLgyy2jN8Oiyovi4m1FHr038"></script>
+  <script src="https://live.zwidgets.com/js-sdk/1.0.5/ZohoEmbededAppSDK.min.js"></script>
+  <link rel="stylesheet" href="widget.css">
 </head>
 
 <body>
-  <h2>This is a sample Widget built using Zoho Extension toolkit.</h2>
-  <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=Ij0yuOPvxLgyy2jN8Oiyovi4m1FHr038"></script>
-  <script src="https://live.zwidgets.com/js-sdk/1.0.5/ZohoEmbededAppSDK.min.js"></script>
+  <div class="container">
+    <header class="headers">
+      <h3>Attendance Dashboard</h3>
+      <div class="profile-icon">👤</div>
+    </header>
 
-  <h2>Check In/Out Tracker</h2>
-  <span id="CheckInStatus" class="CheckInStatus"></span>
-  <button id="checkInButton">Check In</button>
+    <main class="main-content">
+      <div class="nextMain1">
+        <aside class="sidebar">
+          <section class="section1">
+            <div class="toggle-group">
+              <div class="toggle-container">
+                <span id="CheckInStatus" class="CheckInStatus"></span>
+                <span id="toggleText">Check In</span>
+                <input type="checkbox" id="toggleSwitch" hidden>
+                <label for="toggleSwitch" class="toggle"></label>
+              </div>
+            </div>
+            <div>
+              <button class="nav-btn ">Attendance View</button>
+              <button class="nav-btn">Admin Panel</button>
+            </div>
+
+          </section>
+          <section class="section2">
+            <div class="dark-mode">
+              <label>Dark Mode</label>
+              <input type="checkbox" id="darkModeChecked" />
+            </div>
+          </section>
+        </aside>
+      </div>
+
+      <div class="nextMain2">
+        <header class="top-bar">
+          <h3>Attendance Overview</h3>
+          <div class="view-options">
+            <button>Table View</button>
+            <button>Calendar View</button>
+            <button>List View</button>
+          </div>
+        </header>
+
+        <section class="table-section" id="attendanceTableSection">
+          <table>
+            <thead class="headLigth" id="tableHead">
+              <tr>
+                <th>Date</th>
+                <th>First In</th>
+                <th>Last Out</th>
+                <th>Total Hours</th>
+                <th>Payable Hours</th>
+                <th>Office In Hours</th>
+                <th>Remote In Hours</th>
+                <th>Status</th>
+                <th>In Mode</th>
+                <th>Shift(s)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>2024-05-20</td>
+                <td>09:00</td>
+                <td>18:00</td>
+                <td>9h</td>
+                <td>8h</td>
+                <td>6h</td>
+                <td>3h</td>
+                <td>Present</td>
+                <td>Hybrid</td>
+                <td>General</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+
+    </main>
+  </div>
 
   <script src="utils/utils.js" defer></script>
   <script src="ZohoCRM/crmmodules.js" defer></script>
