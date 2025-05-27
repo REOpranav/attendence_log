@@ -21,7 +21,6 @@
           <section class="section1">
             <div class="toggle-group">
               <div class="toggle-container">
-                <span id="CheckInStatus" class="CheckInStatus"></span>
                 <span id="toggleText">Check In</span>
                 <input type="checkbox" id="toggleSwitch" hidden>
                 <label for="toggleSwitch" class="toggle"></label>
@@ -44,12 +43,7 @@
 
       <div class="nextMain2">
         <header class="top-bar">
-          <h3>Attendance Overview</h3>
-          <div class="view-options">
-            <button>Table View</button>
-            <button>Calendar View</button>
-            <button>List View</button>
-          </div>
+          <h3> <span id="CheckInStatus" class="CheckInStatus"></span> | <span class="Overview">Attendance Overview</span></h3>
         </header>
 
         <section class="table-section" id="attendanceTableSection">
@@ -68,19 +62,7 @@
                 <th>Shift(s)</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>2024-05-20</td>
-                <td>09:00</td>
-                <td>18:00</td>
-                <td>9h</td>
-                <td>8h</td>
-                <td>6h</td>
-                <td>3h</td>
-                <td>Present</td>
-                <td>Hybrid</td>
-                <td>General</td>
-              </tr>
+            <tbody id="tableBody">
             </tbody>
           </table>
         </section>
@@ -91,6 +73,7 @@
 
   <script src="utils/utils.js" defer></script>
   <script src="ZohoCRM/crmmodules.js" defer></script>
+  <script src="DashBoard/dashboard.js" defer></script>
   <script src="script.js" defer></script>
 </body>
 

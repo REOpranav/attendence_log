@@ -16,12 +16,12 @@
 body {
     font-family: 'lato', Helvetica, sans-serif, Arial;
     font-size: small;
-    display: flex;
     height: 100vh;
 }
 
 .container {
     width: 100%;
+    height: 100%;
 }
 
 .container>.headers {
@@ -39,7 +39,7 @@ body {
 
 .main-content {
     display: flex;
-    min-height: 93%;
+    height: calc(100% - 50px);
 }
 
 .nextMain2 {
@@ -133,20 +133,6 @@ body {
     font-size: 18px;
 }
 
-.lightMode {
-    margin-top: 3px;
-    overflow-x: auto;
-    background-color: #fff;
-    color: black;
-}
-
-.darkMode {
-    margin-top: 3px;
-    overflow-x: auto;
-    background-color: #131c26;
-    color: var(--color); 
-}
-
 table {
     width: 100%;
     border-collapse: collapse;
@@ -188,12 +174,17 @@ tbody tr:hover {
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
     padding: 3px;
+    justify-content: space-between;
 }
 
 .CheckInStatus {
+    margin-right: 4px;
     color: #0EBC6B;
+}
+
+.Overview{
+    margin-left: 4px;
 }
 
 .toggle {
@@ -223,4 +214,17 @@ input:checked+.toggle {
 
 input:checked+.toggle::before {
     left: 26px;
+}
+
+/* body in */
+.lightMode {
+    overflow-x: auto;
+    background-color: #fff;
+    color: black;
+}
+
+.darkMode {
+    overflow-x: auto;
+    background-color: #131c26;
+    color: var(--color); 
 }

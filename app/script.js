@@ -2,6 +2,7 @@ ZOHO.embeddedApp.on("PageLoad", async function (data) {
     let toggleSwitch = document.getElementById("toggleSwitch");
     const checkInButton = document.getElementById('toggleText');
     const CheckInType = document.getElementById("CheckInStatus")
+    const tableBody = document.getElementById("tableBody");
     const moduleAPIName = "attendancelog__Attendence_Log";
 
     // dark mode toggle functionality
@@ -27,20 +28,21 @@ ZOHO.embeddedApp.on("PageLoad", async function (data) {
             await CheckInOutType(CheckInType);
         } else {
             checkInButton.innerText = "Check In";
-            CheckInType.innerText = "out";
+            CheckInType.innerText = "Out";
         }
     } else {
         checkInButton.innerText = "Check In";
-        CheckInType.innerText = "out";
+        CheckInType.innerText = "Out";
     }
 
+    await tableData(tableBody, getAllRecords);
     document.getElementById('toggleSwitch')?.addEventListener('click', async () => {
         let currentAddress = await getAddress(); // getting current location addressL
         let currentTime = new Date().toLocaleString();
 
         if (checkInButton.textContent === "Check out") {
             checkInButton.innerText = "Check in";
-            CheckInType.innerText = "out";
+            CheckInType.innerText = "Out";
 
             const updateTheRecord = await updateCheckOut(recordId) // If the user is checking out, we need to update the last created record
             if (updateTheRecord.code === "SUCCESS") {
@@ -75,6 +77,7 @@ ZOHO.embeddedApp.on("PageLoad", async function (data) {
                 }
             }
         }
+        await tableData(tableBody);
     })
 })
 
