@@ -81,7 +81,7 @@ async function compareDate(getAllRecords) {
 }
 
 // adding notes while checking in or checking out
-const addingNotes = async (moduleName, recordID, notesTitle, notesContent) => {
+const addNotes = async (moduleName, recordID, notesTitle, notesContent) => {
     try {
         let addingNotes = await ZOHO.CRM.API.addNotes({
             Entity: moduleName,
@@ -96,13 +96,23 @@ const addingNotes = async (moduleName, recordID, notesTitle, notesContent) => {
 }
 
 // get notes from the record
-const getnotes = (moduleName, recordID, relatedList) => {
-    ZOHO.CRM.API.getRelatedRecords({
-        Entity: moduleName,
-        RecordID: recordID,
-        RelatedList: relatedList,
-        page: 1, per_page: 200
-    }).then(function (data) {
-        console.log(data)
-    })
+const getnotes = async (moduleName, recordID, relatedList) => {
+    try {
+        const getNotes = await ZOHO.CRM.API.getRelatedRecords({
+            Entity: moduleName,
+            RecordID: recordID,
+            RelatedList: relatedList,
+            page: 1, per_page: 200
+        })
+
+        return getNotes;
+    } catch (err) {
+        return err
+    }
+}
+
+// notification function to add notes and get notes
+const addAndRetriveNotes = async ([moduleAPIName, recordID, title, content], [relatedListTitle]) => {
+    await addNotes(moduleAPIName, recordID, title, content)
+    await getnotes(moduleAPIName, recordID, relatedListTitle)
 }

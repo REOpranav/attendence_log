@@ -1,4 +1,5 @@
 ZOHO.embeddedApp.on("PageLoad", async function (data) {
+    let toggleSwitch = document.getElementById("toggleSwitch");
     const checkInButton = document.getElementById('toggleText');
     const CheckInType = document.getElementById("CheckInStatus")
     const moduleAPIName = "attendancelog__Attendence_Log";
@@ -14,23 +15,37 @@ ZOHO.embeddedApp.on("PageLoad", async function (data) {
         }
     });
 
+    let getAllRecords = await getAllData()
+    let recordId = getAllRecords.length > 0 ? getAllRecords[0].id : null;
+
+    // get notes from the record
+    let notesData = await getnotes(moduleAPIName, recordId, "Notes");
+    if (notesData.status !== 204 && notesData.code !== '500') {
+        if (await notesData?.data[0]?.Note_Title === 'Check In') {
+            toggleSwitch.checked = true
+            checkInButton.innerText = "Check out"
+            await CheckInOutType(CheckInType);
+        } else {
+            checkInButton.innerText = "Check In";
+            CheckInType.innerText = "out";
+        }
+    } else {
+        checkInButton.innerText = "Check In";
+        CheckInType.innerText = "out";
+    }
+
     document.getElementById('toggleSwitch')?.addEventListener('click', async () => {
         let currentAddress = await getAddress(); // getting current location addressL
         let currentTime = new Date().toLocaleString();
-        let getAllRecords = await getAllData()
 
         if (checkInButton.textContent === "Check out") {
             checkInButton.innerText = "Check in";
             CheckInType.innerText = "out";
 
-            // If the user is checking out, we need to update the last created record
-            const updateTheRecord = await updateCheckOut(getAllRecords[0])
+            const updateTheRecord = await updateCheckOut(recordId) // If the user is checking out, we need to update the last created record
             if (updateTheRecord.code === "SUCCESS") {
-                await addingNotes(moduleAPIName, getAllRecords[0].id, "Check Out", `Checked out at ${currentTime} from ${currentAddress}`);
-                await getnotes(moduleAPIName, getAllRecords[0].id, "Notes").then((response) => {
-                    return console.log(response);
-                })
-                console.log("Record updated successfully:", updateTheRecord.data[0]);
+                await addAndRetriveNotes([moduleAPIName, recordId, "Check Out", `${currentTime} from ${currentAddress?.loc}`], ["Notes"])
+                console.log("Record updated successfully:");
             } else {
                 console.error("Error updating record:", updateTheRecord.message);
             }
@@ -42,18 +57,12 @@ ZOHO.embeddedApp.on("PageLoad", async function (data) {
                 if (await compareDate(getAllRecords) === false) { // checking if the last record is not from today
                     let recordCreation = await createRecord(currentAddress, currentTime, CheckInType?.textContent) // creating a new record
                     if (recordCreation.code == "SUCCESS") {
-                        await addingNotes(moduleAPIName, recordCreation?.details.id, "Check In", `Checked in at ${currentTime} from ${currentAddress}`);
-                        await getnotes(moduleAPIName, recordCreation?.details.id, "Notes").then((response) => {
-                            return console.log(response);
-                        })
+                        await addAndRetriveNotes([moduleAPIName, recordCreation?.details.id, "Check In", `${currentTime} from ${currentAddress?.loc}`], ["Notes"])
                     }
                 } else {
-                    const CheckInUpdate = await updateCheckIn(getAllRecords[0]);
+                    const CheckInUpdate = await updateCheckIn(recordId) // updating the last created record;
                     if (CheckInUpdate.code === "SUCCESS") {
-                        await addingNotes(moduleAPIName, getAllRecords[0].id, "Check In", `Checked in at ${currentTime} from ${currentAddress}`);
-                        await getnotes(moduleAPIName, getAllRecords[0].id, "Notes").then((response) => {
-                            return console.log(response);
-                        })
+                        await addAndRetriveNotes([moduleAPIName, recordId, "Check In", `${currentTime} from ${currentAddress?.loc}`], ["Notes"])
                         console.log("Check-in time updated successfully:");
                     } else {
                         console.error("Error updating check-in time:", CheckInUpdate.message);
@@ -62,10 +71,7 @@ ZOHO.embeddedApp.on("PageLoad", async function (data) {
             } else {
                 const creatingRecord = await createRecord(currentAddress, currentTime, CheckInType?.textContent) // creating a new record
                 if (await creatingRecord.code == "SUCCESS") {
-                    await addingNotes(moduleAPIName, creatingRecord?.details?.id, "Check In", `Checked in at ${currentTime} from ${currentAddress}`);
-                    await getnotes(moduleAPIName, creatingRecord?.details?.id, "Notes").then((response) => {
-                        return console.log(response);
-                    })
+                    await addAndRetriveNotes([moduleAPIName, creatingRecord?.details?.id, "Check In", `${currentTime} from ${currentAddress?.loc}`], ["Notes"])
                 }
             }
         }

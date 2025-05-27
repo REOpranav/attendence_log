@@ -26,13 +26,13 @@ async function createRecord(fetchedLocation, time, checkINOutStatus) {
 }
 
 // Update the check-in
-async function updateCheckIn(lastCreatedRecord) {
+async function updateCheckIn(lastCreatedRecordID) {
     let currentTime = new Date().toLocaleString();
     let CheckIn_time = currentTime.split(",")[1];
     let date = currentTime.split(",")[0];
 
     const recordData = {
-        "id": lastCreatedRecord.id,
+        "id": lastCreatedRecordID,
         "Name": date,
         "attendancelog__Check_In_Time": CheckIn_time,
         "attendancelog__Check_out_Time": "-",
@@ -52,14 +52,14 @@ async function updateCheckIn(lastCreatedRecord) {
 }
 
 // update the record (check out)
-async function updateCheckOut(lastCreatedRecord) {
+async function updateCheckOut(lastCreatedRecordID) {
     let currentTime = new Date().toLocaleString();
     let CheckOut_time = currentTime.split(",")[1];
     let date = currentTime.split(",")[0];
 
     // Check if the lastCreatedRecord has a Tag property, if not, initialize it
     const recordData = {
-        "id": lastCreatedRecord.id,
+        "id": lastCreatedRecordID,
         "Name": date,
         "attendancelog__Check_out_Time": CheckOut_time, // Check Out Time
         "attendancelog__Last_Check_Out": CheckOut_time, // Lasrt Check Out Time
