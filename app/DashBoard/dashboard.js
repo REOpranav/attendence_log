@@ -13,7 +13,6 @@ const tableData = async (tableBody,) => {
             <td>${record.attendancelog__Last_Check_Out}</td>
             <td>${record.attendancelog__Total_Worked_Hours}</td>
             <td>8 Hours</td>
-            <td>${record.attendancelog__Check_out_Time}</td>
             <td>${record.attendancelog__Office_In_Hours}</td>
             <td>${record.attendancelog__Remote_In_Hours}</td>
             <td>${record.attendancelog__CheckIn_Type}</td>
@@ -22,4 +21,19 @@ const tableData = async (tableBody,) => {
             return tableBody.appendChild(row);
         });
     }
+}
+
+function timer(timer) {
+    setInterval(() => {
+        let currentTime = new Date();
+        const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+
+        let initialLogin = new Date(`${today}T17:34:53`);
+        let diffMs = currentTime - initialLogin;
+        let hours = Math.floor(diffMs / (1000 * 60 * 60));
+        let minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+        let seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
+
+        timer.innerHTML = `${hours}h ${minutes}m ${seconds}s`;
+    }, 1000);   
 }

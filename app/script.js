@@ -3,6 +3,7 @@ ZOHO.embeddedApp.on("PageLoad", async function (data) {
     const checkInButton = document.getElementById('toggleText');
     const CheckInType = document.getElementById("CheckInStatus")
     const tableBody = document.getElementById("tableBody");
+    const timers = document.getElementById('timer')
     const moduleAPIName = "attendancelog__Attendence_Log";
 
     // dark mode toggle functionality
@@ -17,6 +18,7 @@ ZOHO.embeddedApp.on("PageLoad", async function (data) {
     });
 
     let getAllRecords = await getAllData()
+    timer(timers) // call the timer
     let recordId = getAllRecords.length > 0 ? getAllRecords[0].id : null;
 
     // get notes from the record
@@ -25,10 +27,14 @@ ZOHO.embeddedApp.on("PageLoad", async function (data) {
         if (await notesData?.data[0]?.Note_Title === 'Check In') {
             toggleSwitch.checked = true
             checkInButton.innerText = "Check out"
+            timers.style.visibility = 'visible'
+            CheckInType.style.color = '#0EBC6B'
             await CheckInOutType(CheckInType);
         } else {
             checkInButton.innerText = "Check In";
             CheckInType.innerText = "Out";
+            CheckInType.style.color = '#ff2e57'
+            timers.style.visibility = 'hidden'
         }
     } else {
         checkInButton.innerText = "Check In";
@@ -43,8 +49,10 @@ ZOHO.embeddedApp.on("PageLoad", async function (data) {
         if (checkInButton.textContent === "Check out") {
             checkInButton.innerText = "Check in";
             CheckInType.innerText = "Out";
+            timers.style.visibility = 'hidden'
+            CheckInType.style.color = '#ff2e57'
 
-            const updateTheRecord = await updateCheckOut(recordId) // If the user is checking out, we need to update the last created record
+            const updateTheRecord = await updateCheckOut(recordId, getAllRecords[0].attendancelog__Initail_Check_In) // If the user is checking out, we need to update the last created record
             if (updateTheRecord.code === "SUCCESS") {
                 await addAndRetriveNotes([moduleAPIName, recordId, "Check Out", `${currentTime} from ${currentAddress?.loc}`], ["Notes"])
                 console.log("Record updated successfully:");
@@ -52,8 +60,10 @@ ZOHO.embeddedApp.on("PageLoad", async function (data) {
                 console.error("Error updating record:", updateTheRecord.message);
             }
         } else {
-            checkInButton.innerText = "Check out";
+            checkInButton.innerText = "Check out"
             await CheckInOutType(CheckInType); // checking if the user is in office or remote
+            CheckInType.style.color = '#0EBC6B'
+            timers.style.visibility = 'visible'
 
             if (getAllRecords.length > 0) {
                 if (await compareDate(getAllRecords) === false) { // checking if the last record is not from today

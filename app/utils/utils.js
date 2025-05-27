@@ -116,3 +116,16 @@ const addAndRetriveNotes = async ([moduleAPIName, recordID, title, content], [re
     await addNotes(moduleAPIName, recordID, title, content)
     await getnotes(moduleAPIName, recordID, relatedListTitle)
 }
+
+// calculate worked hours from start and end time
+const calculateWorkedHours = async (start, end) => {    
+    const toSeconds = time => {
+        const [h, m, s] = time.split(":").map(Number);
+        return h * 3600 + m * 60 + s;
+    };
+
+    const totalSeconds = toSeconds(end) - toSeconds(start);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60)
+    return `${hours}h ${minutes}m`;
+}

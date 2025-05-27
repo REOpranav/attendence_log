@@ -144,11 +144,11 @@ thead {
     background: #f1f2f3;
 }
 
-.headDark{
+.headDark {
     background: #192a3b;
 }
 
-.headLigth{
+.headLigth {
     background: #f1f2f3;
 }
 
@@ -180,10 +180,9 @@ tbody tr:hover {
 
 .CheckInStatus {
     margin-right: 4px;
-    color: #0EBC6B;
 }
 
-.Overview{
+.Overview {
     margin-left: 4px;
 }
 
@@ -226,5 +225,9 @@ input:checked+.toggle::before {
 .darkMode {
     overflow-x: auto;
     background-color: #131c26;
-    color: var(--color); 
+    color: var(--color);
+}
+
+.timer {
+    color: #0EBC6B;
 }
