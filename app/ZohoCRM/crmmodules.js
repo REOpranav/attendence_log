@@ -51,7 +51,7 @@ async function updateCheckIn(lastCreatedRecordID) {
 }
 
 // update the record (check out)
-async function updateCheckOut(lastCreatedRecordID, Initial_Check_In) {
+async function updateCheckOut(lastCreatedRecordID, Initial_Check_In) {    
     let currentTime = new Date().toLocaleString();
     let CheckOut_time = currentTime.split(",")[1];
     let date = currentTime.split(",")[0];

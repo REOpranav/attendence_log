@@ -18,7 +18,7 @@ ZOHO.embeddedApp.on("PageLoad", async function (data) {
     });
 
     let getAllRecords = await getAllData()
-    timer(timers) // call the timer
+    getAllRecords.length > 0 && timer(timers, getAllRecords) // call the timer
     let recordId = getAllRecords.length > 0 ? getAllRecords[0].id : null;
 
     // get notes from the record
@@ -39,6 +39,7 @@ ZOHO.embeddedApp.on("PageLoad", async function (data) {
     } else {
         checkInButton.innerText = "Check In";
         CheckInType.innerText = "Out";
+        CheckInType.style.color = '#ff2e57'
     }
 
     await tableData(tableBody, getAllRecords);
@@ -60,7 +61,6 @@ ZOHO.embeddedApp.on("PageLoad", async function (data) {
                 console.error("Error updating record:", updateTheRecord.message);
             }
         } else {
-            checkInButton.innerText = "Check out"
             await CheckInOutType(CheckInType); // checking if the user is in office or remote
             CheckInType.style.color = '#0EBC6B'
             timers.style.visibility = 'visible'
@@ -86,6 +86,7 @@ ZOHO.embeddedApp.on("PageLoad", async function (data) {
                     await addAndRetriveNotes([moduleAPIName, creatingRecord?.details?.id, "Check In", `${currentTime} from ${currentAddress?.loc}`], ["Notes"])
                 }
             }
+            checkInButton.innerText = "Check out"
         }
         await tableData(tableBody);
     })

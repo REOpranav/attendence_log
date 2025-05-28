@@ -23,17 +23,18 @@ const tableData = async (tableBody,) => {
     }
 }
 
-function timer(timer) {
-    setInterval(() => {
+// timer for showing time current checkIn Hours
+function timer(timer, getReocrds) {    
+    getReocrds.length > 0 && setInterval(() => {
         let currentTime = new Date();
         const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
 
-        let initialLogin = new Date(`${today}T17:34:53`);
+        let initialLogin = new Date(getReocrds[0].Created_Time);
         let diffMs = currentTime - initialLogin;
         let hours = Math.floor(diffMs / (1000 * 60 * 60));
         let minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
         let seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
 
         timer.innerHTML = `${hours}h ${minutes}m ${seconds}s`;
-    }, 1000);   
+    }, 1000);
 }
