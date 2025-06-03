@@ -1,4 +1,4 @@
-const tableData = async (tableBody,) => {
+const tableData = async (tableBody) => {
     let getAllRecords = await getAllData()
     if (getAllRecords.length === 0) {
         tableBody.innerHTML = "<tr><td colspan='10'>No records found</td></tr>";
@@ -8,23 +8,81 @@ const tableData = async (tableBody,) => {
         getAllRecords.forEach(record => {
             const row = document.createElement('tr');
             row.innerHTML = `
-            <td>${record.Name}</td>
-            <td>${record.attendancelog__Initail_Check_In}</td>
-            <td>${record.attendancelog__Last_Check_Out}</td>
-            <td>${record.attendancelog__Total_Worked_Hours}</td>
-            <td>8 Hours</td>
-            <td>${record.attendancelog__Office_In_Hours}</td>
-            <td>${record.attendancelog__Remote_In_Hours}</td>
-            <td>${record.attendancelog__CheckIn_Type}</td>
-            <td>Day</td>
-        `;
-            return tableBody.appendChild(row);
+                <td><span class="arrow">▶</span></td>
+                <td>${record.Name}</td>
+                <td>${record.attendancelog__Initail_Check_In}</td>
+                <td>${record.attendancelog__Last_Check_Out}</td>
+                <td>${record.attendancelog__Total_Worked_Hours}</td>
+                <td>8 Hours</td>
+                <td>${record.attendancelog__Office_In_Hours}</td>
+                <td>${record.attendancelog__Remote_In_Hours}</td>
+                <td>${record.attendancelog__CheckIn_Type}</td>
+                <td>Day</td>
+            `;
+
+            const subRow = document.createElement('tr'); // creating the table row for sub detail of the records
+            subRow.id = `details-${record.id}`;
+            subRow.classList.add('sub-row');
+            tableBody.appendChild(row);
+            tableBody.appendChild(subRow)
+
+
+            const arrow = row.querySelector('.arrow');
+            arrow.addEventListener('click', async e => {
+                e.stopPropagation();
+                const expandedRow = document.getElementById(`details-${record.id}`) ;
+                let notes = await getnotes('attendancelog__Attendence_Log', record.id, 'Notes')
+                notes?.data ? await subTable(notes.data, expandedRow) : 'No logs'
+                const expandableContent = subRow.querySelector('.expandable-content')
+                expandableContent.style.maxHeight = "0px"
+
+                if (expandableContent.classList.contains('open')) {
+                    expandableContent.style.maxHeight = '0px'
+                    expandableContent.classList.remove('open')
+                    arrow.classList.remove('rotate');
+                } else {
+                    expandableContent.classList.add('open');
+                    expandableContent.style.maxHeight = expandableContent.scrollHeight + 'px'
+                    arrow.classList.add('rotate');
+                }
+            });
         });
     }
 }
 
+const subTable = async (notesData, tr) => {
+    const td = document.createElement('td');
+    td.colSpan = '9'
+    td.style.padding = 0
+    td.style.border = 'none'
+    td.innerHTML = `<div class="expandable-content">
+                        <table class="session-table" style="margin-top: 10px;">
+                            <thead>
+                                <tr>
+                                    <th>Check-In Time</th>
+                                    <th>Check-Out Time</th>
+                                    <th>Mode</th>
+                                    <th>Location</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                    ${notesData?.map(rec => `
+                                        <tr>
+                                            <td>${rec.Created_Time}</td>
+                                            <td>${rec.out}</td>
+                                            <td>Remote In</td>
+                                            <td>${rec.Note_Content.split(',')[1]}</td>
+                                        </tr>`
+    )} 
+                            </tbody>
+                        </table>
+                    </div>`
+    tr.appendChild(td)
+    return true
+}
+
 // timer for showing time current checkIn Hours
-function timer(timer, getReocrds) {    
+function timer(timer, getReocrds) {
     getReocrds.length > 0 && setInterval(() => {
         let currentTime = new Date();
         const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
@@ -37,4 +95,13 @@ function timer(timer, getReocrds) {
 
         timer.innerHTML = `${hours}h ${minutes}m ${seconds}s`;
     }, 1000);
+}
+
+function pixelCalled(maxHeight) {
+    let aa = 0;
+    let values = [];
+    while (aa <= maxHeight) {
+        values.push(aa++);
+    }
+    return values;
 }

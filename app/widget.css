@@ -43,6 +43,8 @@ body {
 }
 
 .nextMain2 {
+    height: 100%;
+    overflow: scroll;
     flex: 1;
 }
 
@@ -161,7 +163,6 @@ th,
 td {
     padding: 12px 15px;
     text-align: left;
-    /* border-bottom: 1px solid #ddd; */
 }
 
 tbody tr:hover {
@@ -169,7 +170,61 @@ tbody tr:hover {
     cursor: pointer;
 }
 
-/* toge button */
+tr.main-row:hover {
+    background-color: #f9fafb;
+}
+
+/* Arrow style */
+.arrow {
+    display: inline-block;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    user-select: none;
+}
+
+.arrow.rotate {
+    transform: rotate(90deg);
+}
+
+/* Sub-row hidden by default */
+
+tr.sub-row>td {
+    padding: 0 !important;
+    background: #fafafa;
+}
+
+.expandable-content {
+    overflow: auto;
+    display: none;
+    max-height: 0;
+    transition: all 0.5s ease-in-out;
+    padding: 0 15px;
+}
+
+.expandable-content.open {
+    padding: 15px;
+    display: block;
+}
+
+.session-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.session-table th,
+.session-table td {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    background: #fff;
+}
+
+.session-table th {
+    background-color: #e2e8f0;
+    font-weight: 600;
+}
+
+/* Toggle */
 .toggle-container {
     width: 100%;
     display: flex;
@@ -215,7 +270,6 @@ input:checked+.toggle::before {
     left: 26px;
 }
 
-/* body in */
 .lightMode {
     overflow-x: auto;
     background-color: #fff;

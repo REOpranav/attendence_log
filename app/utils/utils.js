@@ -96,7 +96,7 @@ const addNotes = async (moduleName, recordID, notesTitle, notesContent) => {
 }
 
 // get notes from the record
-const getnotes = async (moduleName, recordID, relatedList) => {
+const getnotes = async (moduleName, recordID, relatedList) => {    
     try {
         const getNotes = await ZOHO.CRM.API.getRelatedRecords({
             Entity: moduleName,
@@ -109,12 +109,6 @@ const getnotes = async (moduleName, recordID, relatedList) => {
     } catch (err) {
         return err
     }
-}
-
-// notification function to add notes and get notes
-const addAndRetriveNotes = async ([moduleAPIName, recordID, title, content], [relatedListTitle]) => {
-    await addNotes(moduleAPIName, recordID, title, content)
-    await getnotes(moduleAPIName, recordID, relatedListTitle)
 }
 
 // calculate worked hours from start and end time
