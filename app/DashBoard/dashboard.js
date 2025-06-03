@@ -30,7 +30,7 @@ const tableData = async (tableBody) => {
             const arrow = row.querySelector('.arrow');
             arrow.addEventListener('click', async e => {
                 e.stopPropagation();
-                const expandedRow = document.getElementById(`details-${record.id}`) ;
+                const expandedRow = document.getElementById(`details-${record.id}`);
                 let notes = await getnotes('attendancelog__Attendence_Log', record.id, 'Notes')
                 notes?.data ? await subTable(notes.data, expandedRow) : 'No logs'
                 const expandableContent = subRow.querySelector('.expandable-content')
@@ -51,10 +51,12 @@ const tableData = async (tableBody) => {
 }
 
 const subTable = async (notesData, tr) => {
+    console.log(notesData);
+
     const td = document.createElement('td');
     td.colSpan = '9'
-    td.style.padding = 0
-    td.style.border = 'none'
+    td.style.padding = 0;
+    td.style.border = 'none';
     td.innerHTML = `<div class="expandable-content">
                         <table class="session-table" style="margin-top: 10px;">
                             <thead>
@@ -66,14 +68,14 @@ const subTable = async (notesData, tr) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                    ${notesData?.map(rec => `
-                                        <tr>
+                                ${notesData?.map(rec =>
+        `<tr>
                                             <td>${rec.Created_Time}</td>
                                             <td>${rec.out}</td>
                                             <td>Remote In</td>
                                             <td>${rec.Note_Content.split(',')[1]}</td>
                                         </tr>`
-    )} 
+    ).join('')}
                             </tbody>
                         </table>
                     </div>`
