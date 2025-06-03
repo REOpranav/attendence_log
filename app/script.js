@@ -42,55 +42,71 @@ ZOHO.embeddedApp.on("PageLoad", async function (data) {
         CheckInType.innerText = "Out";
         CheckInType.style.color = '#ff2e57'
     }
+  
+    window.addEventListener('offline',(e)=>{ 
+        showToast('Take deep breaths till the Internet reconnects',false)
+    })
+
+    window.addEventListener('online',()=>{
+        showToast('Internet reconnected',true);
+        
+    })
 
     document.getElementById('toggleSwitch')?.addEventListener('click', async () => {
-        let currentAddress = await getAddress(); // getting current location addressL
-        let currentTime = new Date().toLocaleString();
-        let getAllRecords = await getAllData()            
-        let recordId = getAllRecords.length > 0 ? getAllRecords[0].id : null;
-        getAllRecords.length > 0 && timer(timers, getAllRecords) // call the timer
+        showLoading()
+        let currentAddress = getAddress().then(async (val) => { // getting current location addressLa
+            hideLoading()
+            let currentTime = new Date().toLocaleString();
+            let getAllRecords = await getAllData()
+            let recordId = getAllRecords.length > 0 ? getAllRecords[0].id : null;
+            getAllRecords.length > 0 && timer(timers, getAllRecords) // call the timer
 
-        if (checkInButton.textContent === "Check out") {
-            checkInButton.innerText = "Check in"
-            CheckInType.innerText = "Out"
-            timers.style.visibility = 'hidden'
-            CheckInType.style.color = '#ff2e57'
+            if (checkInButton.textContent === "Check out") {
+                checkInButton.innerText = "Check in"
+                CheckInType.innerText = "Out"
+                timers.style.visibility = 'hidden'
+                CheckInType.style.color = '#ff2e57'
 
-            const updateTheRecord = await updateCheckOut(recordId,await getAllRecords[0].attendancelog__Initail_Check_In) // If the user is checking out, we need to update the last created record            
-            if (updateTheRecord.code === "SUCCESS") {
-                await addNotes(moduleAPIName, recordId, "Check Out", `${currentTime} from ${currentAddress?.loc}`)
+                const updateTheRecord = await updateCheckOut(recordId, await getAllRecords[0].attendancelog__Initail_Check_In) // If the user is checking out, we need to update the last created record            
+                if (updateTheRecord.code === "SUCCESS") {
+                    await addNotes(moduleAPIName, recordId, "Check Out", `${currentTime} from ${currentAddress?.loc}`)
+                } else {
+                    console.error("Error updating record:", updateTheRecord.message);
+                }
             } else {
-                console.error("Error updating record:", updateTheRecord.message);
-            }
-        } else {
-            await CheckInOutType(CheckInType); // checking if the user is in office or remote
-            CheckInType.style.color = '#0EBC6B'
-            timers.style.visibility = 'visible'
+                await CheckInOutType(CheckInType); // checking if the user is in office or remote
+                CheckInType.style.color = '#0EBC6B'
+                timers.style.visibility = 'visible'
 
-            if (getAllRecords.length > 0) {
-                if (await compareDate(getAllRecords) === false) { // checking if the last record is not from today
-                    let recordCreation = await createRecord(currentAddress, currentTime, CheckInType?.textContent) // creating a new record
-                    if (recordCreation.code == "SUCCESS") {
-                        await addNotes(moduleAPIName, recordCreation?.details.id, "Check In", `${currentTime} from ${currentAddress?.loc}`)
+                if (getAllRecords.length > 0) {
+                    if (await compareDate(getAllRecords) === false) { // checking if the last record is not from today
+                        let recordCreation = await createRecord(currentAddress, currentTime, CheckInType?.textContent) // creating a new record
+                        if (recordCreation.code == "SUCCESS") {
+                            await addNotes(moduleAPIName, recordCreation?.details.id, "Check In", `${currentTime} from ${currentAddress?.loc}`)
+                        }
+                    } else {
+                        const CheckInUpdate = await updateCheckIn(recordId) // updating the last created record;
+                        if (CheckInUpdate.code === "SUCCESS") {
+                            await addNotes(moduleAPIName, recordId, "Check In", `${currentTime} from ${currentAddress?.loc}`)
+                            console.log("Check-in time updated successfully:");
+                        } else {
+                            console.error("Error updating check-in time:", CheckInUpdate.message);
+                        }
                     }
                 } else {
-                    const CheckInUpdate = await updateCheckIn(recordId) // updating the last created record;
-                    if (CheckInUpdate.code === "SUCCESS") {
-                        await addNotes(moduleAPIName, recordId, "Check In", `${currentTime} from ${currentAddress?.loc}`)
-                        console.log("Check-in time updated successfully:");
-                    } else {
-                        console.error("Error updating check-in time:", CheckInUpdate.message);
+                    const creatingRecord = await createRecord(currentAddress, currentTime, CheckInType?.textContent) // creating a new record
+                    if (await creatingRecord.code == "SUCCESS") {
+                        await addNotes(moduleAPIName, creatingRecord?.details?.id, "Check In", `${currentTime} from ${currentAddress?.loc}`)
                     }
                 }
-            } else {
-                const creatingRecord = await createRecord(currentAddress, currentTime, CheckInType?.textContent) // creating a new record
-                if (await creatingRecord.code == "SUCCESS") {
-                    await addNotes(moduleAPIName, creatingRecord?.details?.id, "Check In", `${currentTime} from ${currentAddress?.loc}`)
-                }
+                checkInButton.innerText = "Check out"
             }
-            checkInButton.innerText = "Check out"
-        }
-        await tableData(tableBody);
+            await tableData(tableBody);
+        }).catch(val => {
+            hideLoading()
+            toggleSwitch.checked = false
+            showToast("Location access failed on this network. Kindly switch to a different network and try again.", false)
+        })
     })
 })
 

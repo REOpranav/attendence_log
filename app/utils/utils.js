@@ -15,7 +15,7 @@ function getAddress() { // getting the current location address
                     });
                 });
             } else {
-                reject(new Error("Failed to get current position"));
+                reject(geo.getStatus());
             }
         }, {
             enableHighAccuracy: true,
@@ -96,7 +96,7 @@ const addNotes = async (moduleName, recordID, notesTitle, notesContent) => {
 }
 
 // get notes from the record
-const getnotes = async (moduleName, recordID, relatedList) => {    
+const getnotes = async (moduleName, recordID, relatedList) => {
     try {
         const getNotes = await ZOHO.CRM.API.getRelatedRecords({
             Entity: moduleName,
@@ -112,7 +112,7 @@ const getnotes = async (moduleName, recordID, relatedList) => {
 }
 
 // calculate worked hours from start and end time
-const calculateWorkedHours = async (start, end) => {    
+const calculateWorkedHours = async (start, end) => {
     const toSeconds = time => {
         const [h, m, s] = time.split(":").map(Number);
         return h * 3600 + m * 60 + s;
@@ -122,4 +122,44 @@ const calculateWorkedHours = async (start, end) => {
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60)
     return `${hours}h ${minutes}m`;
+}
+
+//  calculate Work hout betweeen check in and check out
+const calculateInterWorkedhours = async (In, Out) => {
+    const InTime = In.split('T')[1].split('+')[0];
+    const outTime = Out.split('T')[1].split('+')[0];
+
+    return await calculateWorkedHours(InTime, outTime);
+}
+
+// toast code
+function showToast(message, isSuccess = false) {
+    const toast = document.querySelector('.toast');
+    toast.textContent = message;
+    toast.style.color = isSuccess ? '#4CAF50' : '#f44949';
+    toast.classList.remove('hide');
+    toast.style.visibility = 'visible';
+
+    void toast.offsetWidth;
+
+    toast.classList.add('show');
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+        toast.classList.add('hide');
+
+        setTimeout(() => {
+            toast.style.visibility = 'hidden';
+        }, 200);
+    }, 5 * 1000);
+}
+
+function showLoading() {
+    document.getElementById('headLoading').style.display = 'block'
+    document.getElementById('attendanceTableSection').style.display = 'none'
+}
+
+function hideLoading() {
+    document.getElementById('headLoading').style.display = 'none'
+    document.getElementById('attendanceTableSection').style.display = 'block'
 }

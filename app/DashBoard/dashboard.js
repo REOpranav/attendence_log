@@ -51,12 +51,40 @@ const tableData = async (tableBody) => {
 }
 
 const subTable = async (notesData, tr) => {
-    console.log(notesData);
+
+    let checkIn = []
+    let checkout = []
+    notesData.forEach(element => {
+        if (element.Note_Title == 'Check In') {
+            checkIn.push(element)
+        } else {
+            checkout.push(element)
+        }
+    })
+
+    if (checkIn.length > checkout.length) {
+        let hifenObject = {
+            Created_Time: '-'
+        }
+        checkout.unshift(hifenObject)
+    }
 
     const td = document.createElement('td');
-    td.colSpan = '9'
+    td.colSpan = '10'
     td.style.padding = 0;
     td.style.border = 'none';
+    const rows = await Promise.all(checkIn.map(async (rec, index) => {
+        return `
+    <tr class="subRow_Details">
+      <td>${rec.Created_Time}</td>
+      <td>${checkout[index]?.Created_Time || ''}</td>
+      <td>Remote In</td>
+      <td>${await calculateInterWorkedhours(rec.Created_Time, checkout[index]?.Created_Time)}</td>
+      <td>${rec.Note_Content.split(',')[1] || ''}</td>
+    </tr>
+  `;
+    }));
+
     td.innerHTML = `<div class="expandable-content">
                         <table class="session-table" style="margin-top: 10px;">
                             <thead>
@@ -64,18 +92,12 @@ const subTable = async (notesData, tr) => {
                                     <th>Check-In Time</th>
                                     <th>Check-Out Time</th>
                                     <th>Mode</th>
+                                    <th>Worked Hours</th>
                                     <th>Location</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                ${notesData?.map(rec =>
-        `<tr>
-                                            <td>${rec.Created_Time}</td>
-                                            <td>${rec.out}</td>
-                                            <td>Remote In</td>
-                                            <td>${rec.Note_Content.split(',')[1]}</td>
-                                        </tr>`
-    ).join('')}
+                                ${rows.join('')}
                             </tbody>
                         </table>
                     </div>`
@@ -97,13 +119,4 @@ function timer(timer, getReocrds) {
 
         timer.innerHTML = `${hours}h ${minutes}m ${seconds}s`;
     }, 1000);
-}
-
-function pixelCalled(maxHeight) {
-    let aa = 0;
-    let values = [];
-    while (aa <= maxHeight) {
-        values.push(aa++);
-    }
-    return values;
 }
