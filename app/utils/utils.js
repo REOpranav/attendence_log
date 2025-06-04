@@ -118,18 +118,37 @@ const calculateWorkedHours = async (start, end) => {
         return h * 3600 + m * 60 + s;
     };
 
-    const totalSeconds = toSeconds(end) - toSeconds(start);
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60)
-    return `${hours}h ${minutes}m`;
+    if (end) {
+        const totalSeconds = toSeconds(end) - toSeconds(start);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60)
+        return hours ? `${hours}h ${minutes}m` : `${minutes}m`
+    } else {
+        return '-'
+    }
+
 }
 
 //  calculate Work hout betweeen check in and check out
-const calculateInterWorkedhours = async (In, Out) => {
+const calculateInterWorkedhours = async (In, Out) => {    
+    console.log(Out);
     const InTime = In.split('T')[1].split('+')[0];
-    const outTime = Out.split('T')[1].split('+')[0];
-
+    const outTime = Out !== '-' ? Out?.split('T')[1].split('+')[0] : false
     return await calculateWorkedHours(InTime, outTime);
+}
+
+// convert ISO time to human readable formate
+const convertISOtoReadanle = (ISOtime) => {
+    if (ISOtime !== '-') {
+        const date = new Date(ISOtime);
+        const hours = date.getHours();
+        const period = hours < 12 ? 'AM' : 'PM';
+        const readableTimeFormate = ISOtime?.split('T')[1].split('+')[0];
+        return `${readableTimeFormate} ${period}`
+    } else {
+        return '-'
+    }
+
 }
 
 // toast code
