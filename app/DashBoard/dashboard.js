@@ -14,8 +14,7 @@ const tableData = async (tableBody) => {
                 <td>${record.attendancelog__Last_Check_Out}</td>
                 <td>${record.attendancelog__Total_Worked_Hours}</td>
                 <td>8 Hours</td>
-                <td>${record.attendancelog__Office_In_Hours}</td>
-                <td>${record.attendancelog__Remote_In_Hours}</td>
+                <td>${record.attendancelog__Total_Worked_Hours}</td>
                 <td>${record.attendancelog__CheckIn_Type}</td>
                 <td>Day</td>
             `;
@@ -74,13 +73,14 @@ const subTable = async (notesData, tr) => {
     td.style.padding = 0;
     td.style.border = 'none';
     const rows = await Promise.all(checkIn.map(async (rec, index) => {
+        console.log(checkout[index]?.Created_Time);
         return `
     <tr class="subRow_Details">
-      <td>${rec.Created_Time}</td>
-      <td>${checkout[index]?.Created_Time || ''}</td>
+      <td>${convertISOtoReadanle(rec.Created_Time)}</td>
+      <td>${convertISOtoReadanle(checkout[index]?.Created_Time) || ''}</td>
       <td>Remote In</td>
       <td>${await calculateInterWorkedhours(rec.Created_Time, checkout[index]?.Created_Time)}</td>
-      <td>${rec.Note_Content.split(',')[1] || ''}</td>
+      <td>${rec.Note_Content.split('from')[1] || ''}</td>
     </tr>
   `;
     }));
@@ -118,5 +118,5 @@ function timer(timer, getReocrds) {
         let seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
 
         timer.innerHTML = `${hours}h ${minutes}m ${seconds}s`;
-    }, 1000);
+    }, 1000)
 }
