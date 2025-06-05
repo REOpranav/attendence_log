@@ -51,8 +51,7 @@ async function updateCheckIn(lastCreatedRecordID) {
 }
 
 // update the record (check out)
-async function updateCheckOut(lastCreatedRecordID, Initial_Check_In) {    
-    
+async function updateCheckOut(lastCreatedRecordID, Initial_Check_In) {
     let currentTime = new Date().toLocaleString();
     let CheckOut_time = currentTime.split(",")[1];
     let date = currentTime.split(",")[0];
@@ -67,10 +66,8 @@ async function updateCheckOut(lastCreatedRecordID, Initial_Check_In) {
         "attendancelog__Total_Worked_Hours": workedHours, // Total Worked Hours
     }
 
-    console.log(recordData);
-    
     try {
-        let response = await ZOHO.CRM.API.updateRecord({ Entity: "attendancelog__Attendence_Log", APIData: recordData, Trigger: ["workflow"] })        
+        let response = await ZOHO.CRM.API.updateRecord({ Entity: "attendancelog__Attendence_Log", APIData: recordData, Trigger: ["workflow"] })
         if (response.data[0].code !== "SUCCESS") {
             throw new Error(`Error updating record: ${response.message}`);
         }

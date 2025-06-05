@@ -1,3 +1,11 @@
+// getting Current User
+async function getCurrentUser() {
+    let currentUserId = await ZOHO.CRM.CONFIG.getCurrentUser().then(function (data) {
+        return data.users[0].id;
+    })
+    return currentUserId
+}
+
 // This is Baidu map API 
 function getAddress() { // getting the current location address
     return new Promise((resolve, reject) => {
@@ -49,18 +57,25 @@ async function CheckInOutType(CheckInStatus) {
 }
 
 // Get all records from the ZOHO CRM
-async function getAllData() {
-    try {
-        let response = await ZOHO.CRM.API.getAllRecords({ Entity: "attendancelog__Attendence_Log", page: 1 });
-        if (!response?.data) {
-            if (response?.status === 204) return [];
-            throw new Error(`${response.status}`);
+async function getAllData(id) {
+    if (id) {
+        var config = {
+            "select_query": "select Name, Created_Time, attendancelog__Initail_Check_In, attendancelog__Last_Check_Out, attendancelog__Check_In_Time, attendancelog__Check_out_Time, attendancelog__CheckIn_Type, attendancelog__Total_Worked_Hours from attendancelog__Attendence_Log where Owner = '" + id + "'"
+        };
+
+        try {
+            let response = await ZOHO.CRM.API.coql(config);
+            if (!response?.data) {
+                if (response?.status === 204) return [];
+                throw new Error(`${response.status}`);
+            }
+            return response?.data;
+        } catch (error) {
+            console.error(error)
+            throw new Error(error);
         }
-        return response?.data;
-    } catch (error) {
-        console.error(error)
-        throw new Error(error);
     }
+
 }
 
 // conmpare the date of the last record with the current date
@@ -68,12 +83,12 @@ async function compareDate(getAllRecords) {
     let lastRecordDate = getAllRecords[0].Created_Time.split("T")[0];
     let currentDate = new Date().toLocaleString().split(",")[0];
 
-    const date1 = new Date(lastRecordDate)
+    const date1 = new Date(lastRecordDate).getDate()
     const date2Parts = currentDate.split("/")
+    const date2 = new Date(`${date2Parts[2]}-${date2Parts[1]}-${date2Parts[0]}`).getDate()
 
-    const date2 = new Date(`${date2Parts[2]}-${date2Parts[1]}-${date2Parts[0]}`)
     // Compare them
-    if (date1.getTime() === date2.getTime()) {
+    if (date1 == date2) {
         return true;
     } else {
         return false;
@@ -130,8 +145,7 @@ const calculateWorkedHours = async (start, end) => {
 }
 
 //  calculate Work hout betweeen check in and check out
-const calculateInterWorkedhours = async (In, Out) => {    
-    console.log(Out);
+const calculateInterWorkedhours = async (In, Out) => {
     const InTime = In.split('T')[1].split('+')[0];
     const outTime = Out !== '-' ? Out?.split('T')[1].split('+')[0] : false
     return await calculateWorkedHours(InTime, outTime);
@@ -174,11 +188,17 @@ function showToast(message, isSuccess = false) {
 }
 
 function showLoading() {
+    if (document.getElementById('toggleSwitch_darkMode').checked) {
+        document.getElementById('headLoading').style.backgroundColor = '#131c26'
+    } else {
+        document.getElementById('headLoading').style.backgroundColor = '#fff'
+    }
+    
     document.getElementById('headLoading').style.display = 'block'
     document.getElementById('attendanceTableSection').style.display = 'none'
 }
 
-function hideLoading() {
+function hideLoading() { 
     document.getElementById('headLoading').style.display = 'none'
     document.getElementById('attendanceTableSection').style.display = 'block'
 }

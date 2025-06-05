@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=Ij0yuOPvxLgyy2jN8Oiyovi4m1FHr038"></script>
-  <script src="https://live.zwidgets.com/js-sdk/1.0.5/ZohoEmbededAppSDK.min.js"></script>
+  <script src="https://live.zwidgets.com/js-sdk/1.0.6/ZohoEmbededAppSDK.min.js"></script>
   <link rel="stylesheet" href="widget.css">
 </head>
 
@@ -34,8 +34,13 @@
           </section>
           <section class="section2">
             <div class="dark-mode">
-              <label>Dark Mode</label>
-              <input type="checkbox" id="darkModeChecked" />
+              <div class="toggle-group">
+                <div class="toggle-container_darkMode">
+                  <span>Dark Mode</span>
+                  <input type="checkbox" id="toggleSwitch_darkMode" hidden>
+                  <label for="toggleSwitch_darkMode" class="toggle_darkMode"></label>
+                </div>
+              </div>
             </div>
           </section>
         </aside>
@@ -48,7 +53,7 @@
         </header>
 
         <div id="headLoading" style="display: none;">
-          <div id="loading" >
+          <div id="loading">
             <div id="loadingHeader">
               <div class="loadingio-spinner-wedges-2by998twmg9">
                 <div class="ldio-yzaezf3dcml">
@@ -84,7 +89,6 @@
                 <th>Total Hours</th>
                 <th>Payable Hours</th>
                 <th>Office In Hours</th>
-                <!-- <th>Remote In Hours</th> -->
                 <th>In Mode</th>
                 <th>Shift(s)</th>
               </tr>

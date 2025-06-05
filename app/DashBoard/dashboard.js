@@ -1,5 +1,6 @@
 const tableData = async (tableBody) => {
-    let getAllRecords = await getAllData()
+    let currentUser = await getCurrentUser()
+    let getAllRecords = await getAllData(currentUser)
     if (getAllRecords.length === 0) {
         tableBody.innerHTML = "<tr><td colspan='10'>No records found</td></tr>";
         return;
@@ -44,6 +45,13 @@ const tableData = async (tableBody) => {
                     expandableContent.style.maxHeight = expandableContent.scrollHeight + 'px'
                     arrow.classList.add('rotate');
                 }
+
+                if (document.getElementById('toggleSwitch_darkMode').checked) {
+                    document.getElementById('expanding_subrow').classList.add('darkMode');
+                } else {
+                    document.getElementById('expanding_subrow').classList.remove('darkMode');
+                    document.getElementById('expanding_subrow').classList.add('lightMode')
+                }
             });
         });
     }
@@ -73,9 +81,8 @@ const subTable = async (notesData, tr) => {
     td.style.padding = 0;
     td.style.border = 'none';
     const rows = await Promise.all(checkIn.map(async (rec, index) => {
-        console.log(checkout[index]?.Created_Time);
         return `
-    <tr class="subRow_Details">
+    <tr class="subRow_Details" id="expanding_table">
       <td>${convertISOtoReadanle(rec.Created_Time)}</td>
       <td>${convertISOtoReadanle(checkout[index]?.Created_Time) || ''}</td>
       <td>Remote In</td>
@@ -85,7 +92,7 @@ const subTable = async (notesData, tr) => {
   `;
     }));
 
-    td.innerHTML = `<div class="expandable-content">
+    td.innerHTML = `<div class="expandable-content" id="expanding_subrow">
                         <table class="session-table" style="margin-top: 10px;">
                             <thead>
                                 <tr>

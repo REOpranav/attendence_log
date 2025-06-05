@@ -1,4 +1,7 @@
 ZOHO.embeddedApp.on("PageLoad", async function (data) {
+    // getting Current User
+
+    let currentUser = await getCurrentUser()
     let toggleSwitch = document.getElementById("toggleSwitch");
     const checkInButton = document.getElementById('toggleText');
     const CheckInType = document.getElementById("CheckInStatus")
@@ -7,23 +10,40 @@ ZOHO.embeddedApp.on("PageLoad", async function (data) {
     const moduleAPIName = "attendancelog__Attendence_Log";
 
     // dark mode toggle functionality
-    document.getElementById('darkModeChecked')?.addEventListener('change', () => {
-        if (document.getElementById('darkModeChecked').checked) {
+    document.getElementById('toggleSwitch_darkMode')?.addEventListener('click', () => {
+        if (document.getElementById('toggleSwitch_darkMode').checked) {
+            toggleSwitch_darkMode.checked = true
             document.body.classList = 'darkMode'
             document.getElementById('tableHead').className = 'headDark'
+            document.getElementById('expanding_subrow').classList.add('darkMode');
+            let ele = document.getElementById('expanding_table')            
+            ele.forEach(element => {
+                element.classList.add('darkMode')
+            });
+
         } else {
+            toggleSwitch_darkMode.checked = false
             document.body.classList = 'lightMode'
             document.getElementById('tableHead').className = 'headLigth'
+            document.getElementById('expanding_subrow').classList.remove('darkMode')
+            document.getElementById('expanding_subrow').classList.add('lightMode')
+
+            let ele = document.getElementById('expanding_table')
+            ele.forEach(element => {
+                element.classList.remove('darkMode')
+                element.classList.add('lightMode')
+            });
         }
     });
 
-    let getAllRecords = await getAllData()
-    await tableData(tableBody, getAllRecords);
+    let getAllRecords = await getAllData(currentUser)
+    await tableData(tableBody, currentUser);
     getAllRecords.length > 0 && timer(timers, getAllRecords) // call the timer
     let recordId = getAllRecords.length > 0 ? getAllRecords[0].id : null;
 
     // get notes from the record
     let notesData = await getnotes(moduleAPIName, recordId, "Notes");
+
     if (notesData.status !== 204 && notesData.code !== '500') {
         if (await notesData?.data[0]?.Note_Title === 'Check In') {
             toggleSwitch.checked = true
@@ -43,7 +63,7 @@ ZOHO.embeddedApp.on("PageLoad", async function (data) {
         CheckInType.style.color = '#ff2e57'
     }
 
-    window.addEventListener('offline',  (e) => {
+    window.addEventListener('offline', (e) => {
         showToast('Take deep breaths till the Internet reconnects', false)
     })
 
@@ -57,7 +77,7 @@ ZOHO.embeddedApp.on("PageLoad", async function (data) {
         let currentAddress = getAddress().then(async (val) => { // getting current location addressLa
             hideLoading()
             let currentTime = new Date().toLocaleString();
-            let getAllRecords = await getAllData()
+            let getAllRecords = await getAllData(currentUser)
             let recordId = getAllRecords.length > 0 ? getAllRecords[0].id : null;
             getAllRecords.length > 0 && timer(timers, getAllRecords) // call the timer
 
@@ -79,7 +99,7 @@ ZOHO.embeddedApp.on("PageLoad", async function (data) {
                 timers.style.visibility = 'visible'
 
                 if (getAllRecords.length > 0) {
-                    if (await compareDate(getAllRecords) === false) { // checking if the last record is not from today
+                    if (await compareDate(getAllRecords) == false) { // checking if the last record is not from today
                         let recordCreation = await createRecord(val, currentTime, CheckInType?.textContent) // creating a new record
                         if (recordCreation.code == "SUCCESS") {
                             await addNotes(moduleAPIName, recordCreation?.details.id, "Check In", `${currentTime} from ${val?.loc}`)
@@ -88,7 +108,6 @@ ZOHO.embeddedApp.on("PageLoad", async function (data) {
                         const CheckInUpdate = await updateCheckIn(recordId) // updating the last created record;
                         if (CheckInUpdate.code === "SUCCESS") {
                             await addNotes(moduleAPIName, recordId, "Check In", `${currentTime} from ${val?.loc}`)
-                            console.log("Check-in time updated successfully:");
                         } else {
                             console.error("Error updating check-in time:", CheckInUpdate.message);
                         }
