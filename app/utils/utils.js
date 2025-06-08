@@ -69,7 +69,8 @@ async function getAllData(id) {
                 if (response?.status === 204) return [];
                 throw new Error(`${response.status}`);
             }
-            return response?.data;
+            
+            return response?.data?.reverse()
         } catch (error) {
             console.error(error)
             throw new Error(error);
